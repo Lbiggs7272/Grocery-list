@@ -23,6 +23,13 @@
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+        .header-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
         input {
             width: calc(70% - 10px);
             padding: 10px;
@@ -59,7 +66,7 @@
             cursor: pointer;
         }
         .dropdown-content span:hover {
-            background-color: #F3DAF4; /* Pink hover color matching button */
+            background-color: #F3DAF4;
             color: #333;
         }
         .btn-small {
@@ -111,6 +118,7 @@
 <body>
 
 <div class="container">
+    <img src="/grocery-list-app/masterheader.png" alt="Master Grocery List Header" class="header-image">
     <h1>Master Grocery List</h1>
 
     <input type="text" id="itemName" placeholder="Item name">
@@ -138,7 +146,7 @@
 </div>
 
 <script>
-    let selectedCategory = 'Fruits'; // Default category
+    let selectedCategory = 'Fruits';
 
     window.onload = function() {
         loadMasterList();
@@ -148,13 +156,11 @@
             }
         });
 
-        // Dropdown toggle
         document.getElementById('dropdownButton').addEventListener('click', function() {
             const content = document.getElementById('dropdownContent');
             content.style.display = content.style.display === 'block' ? 'none' : 'block';
         });
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const dropdown = document.querySelector('.dropdown');
             if (!dropdown.contains(event.target)) {
