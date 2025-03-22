@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Grocery List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Bitter', serif;
+            background-color: #f1eeed;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #C9A6AA;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: calc(70% - 10px);
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: calc(70% - 10px);
+            margin-bottom: 10px;
+        }
+        .dropdown-button {
+            width: 100%;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        .dropdown-content span {
+            display: block;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .dropdown-content span:hover {
+            background-color: #F3DAF4; /* Pink hover color matching button */
+            color: #333;
+        }
+        .btn-small {
+            padding: 8px 15px;
+            background: #FFBE98;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-small:hover {
+            background: #F3DAF4;
+        }
+        .category-section {
+            margin-bottom: 20px;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .remove-btn, .add-btn {
+            padding: 6px 12px;
+            background: #FFBE98;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .remove-btn:hover, .add-btn:hover {
+            background: #F3DAF4;
+        }
+        .nav-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #C9A6AA;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Master Grocery List</h1>
+
+    <input type="text" id="itemName" placeholder="Item name">
+    <div class="dropdown">
+        <button class="dropdown-button" id="dropdownButton">Fruits</button>
+        <div class="dropdown-content" id="dropdownContent">
+            <span onclick="selectCategory('Fruits')">Fruits</span>
+            <span onclick="selectCategory('Vegetables')">Vegetables</span>
+            <span onclick="selectCategory('Meat')">Meat</span>
+            <span onclick="selectCategory('Dairy')">Dairy</span>
+            <span onclick="selectCategory('Snacks')">Snacks</span>
+            <span onclick="selectCategory('Canned Goods')">Canned Goods</span>
+            <span onclick="selectCategory('Dry Goods')">Dry Goods</span>
+            <span onclick="selectCategory('Drinks')">Drinks</span>
+            <span onclick="selectCategory('Refrigerated')">Refrigerated</span>
+            <span onclick="selectCategory('Frozen')">Frozen</span>
+            <span onclick="selectCategory('Misc')">Misc</span>
+        </div>
+    </div>
+    <button class="btn-small" onclick="addMasterItem()">Add</button>
+
+    <div id="masterList"></div>
+
+    <a href="grocery-list.html" class="nav-btn">Go to Store List 🛒</a>
+</div>
+
+<script>
+    let selectedCategory = 'Fruits'; // Default category
+
+    window.onload = function() {
+        loadMasterList();
+        document.getElementById('itemName').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                addMasterItem();
+            }
+        });
+
+        // Dropdown toggle
+        document.getElementById('dropdownButton').addEventListener('click', function() {
+            const content = document.getElementById('dropdownContent');
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.dropdown');
+            if (!dropdown.contains(event.target)) {
+                document.getElementById('dropdownContent').style.display = 'none';
+            }
+        });
+    };
+
+    function selectCategory(category) {
+        selectedCategory = category;
+        document.getElementById('dropdownButton').textContent = category;
+        document.getElementById('dropdownContent').style.display = 'none';
+    }
+
+    function addMasterItem() {
+        const name = document.getElementById('itemName').value.trim();
+        const category = selectedCategory;
+
+        if (!name) return;
+
+        const masterList = JSON.parse(localStorage.getItem('masterList')) || [];
+        masterList.push({ name, category });
+
+        localStorage.setItem('masterList', JSON.stringify(masterList));
+        document.getElementById('itemName').value = '';
+        loadMasterList();
+    }
+
+    function loadMasterList() {
+        const masterList = JSON.parse(localStorage.getItem('masterList')) || [];
+        const masterDiv = document.getElementById('masterList');
+        masterDiv.innerHTML = '';
+
+        const categories = [
+            'Fruits', 'Vegetables', 'Meat', 'Dairy', 'Snacks', 
+            'Canned Goods', 'Dry Goods', 'Drinks', 'Refrigerated', 'Frozen', 'Misc'
+        ];
+        categories.forEach(category => {
+            const itemsInCategory = masterList.filter(item => item.category === category);
+            if (itemsInCategory.length > 0) {
+                itemsInCategory.sort((a, b) => a.name.localeCompare(b.name));
+
+                const section = document.createElement('div');
+                section.classList.add('category-section');
+
+                const heading = document.createElement('h2');
+                heading.textContent = category;
+                section.appendChild(heading);
+
+                itemsInCategory.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add('item');
+                    const globalIndex = masterList.findIndex(i => i.name === item.name && i.category === item.category);
+                    div.innerHTML = `
+                        <span>${item.name}</span>
+                        <div>
+                            <button class="add-btn" onclick="addToGroceryList('${item.name}', '${item.category}')">➕ Add</button>
+                            <button class="remove-btn" onclick="removeMasterItem(${globalIndex})">❌</button>
+                        </div>
+                    `;
+                    section.appendChild(div);
+                });
+                masterDiv.appendChild(section);
+            }
+        });
+    }
+
+    function removeMasterItem(index) {
+        const masterList = JSON.parse(localStorage.getItem('masterList')) || [];
+        masterList.splice(index, 1);
+        localStorage.setItem('masterList', JSON.stringify(masterList));
+        loadMasterList();
+    }
+
+    function addToGroceryList(name, category) {
+        const groceryList = JSON.parse(localStorage.getItem('groceryList')) || [];
+        
+        const existingItem = groceryList.find(item => item.name === name && item.category === category);
+        
+        if (existingItem) {
+            existingItem.quantity = (existingItem.quantity || 1) + 1;
+        } else {
+            groceryList.push({ name, category, quantity: 1 });
+        }
+
+        localStorage.setItem('groceryList', JSON.stringify(groceryList));
+    }
+</script>
+
+</body>
+</html>

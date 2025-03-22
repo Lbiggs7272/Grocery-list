@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Grocery List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Bitter', serif;
+            background-color: #f1eeed;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #C9A6AA;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .item-content {
+            display: flex;
+            align-items: center;
+        }
+        .tag {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            color: #333;
+            margin-right: 10px;
+            text-align: center;
+            width: fit-content;
+        }
+        .Fruits { background: #f8c8dc; }
+        .Vegetables { background: #d4edda; }
+        .Meat { background: #f7c6c7; }
+        .Dairy { background: #c6def1; }
+        .Snacks { background: #fff3cd; }
+        .Canned-Goods { background: #d3cce3; }
+        .Dry-Goods { background: #e2e3df; }
+        .Drinks { background: #cce5ff; }
+        .Refrigerated { background: #d1ecf1; }
+        .Frozen { background: #e6d7ff; }
+        .Misc { background: #e5d3f1; }
+        .remove-btn {
+            padding: 6px 12px;
+            background: #FFBE98;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .remove-btn:hover {
+            background: #F3DAF4;
+        }
+        .nav-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #C9A6AA;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Store Grocery List</h1>
+
+    <div id="groceryList"></div>
+
+    <a href="master-grocery-list.html" class="nav-btn">Back to Master List 📋</a>
+</div>
+
+<script>
+    window.onload = loadGroceryList;
+
+    function loadGroceryList() {
+        const groceryList = JSON.parse(localStorage.getItem('groceryList')) || [];
+        const groceryDiv = document.getElementById('groceryList');
+        groceryDiv.innerHTML = '';
+
+        const categoryOrder = [
+            'Fruits', 'Vegetables', 'Meat', 'Dairy', 'Snacks', 
+            'Canned Goods', 'Dry Goods', 'Drinks', 'Refrigerated', 'Frozen', 'Misc'
+        ];
+        groceryList.sort((a, b) => 
+            categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category)
+        );
+
+        groceryList.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.classList.add('item');
+
+            const quantityText = item.quantity > 1 ? ` (x${item.quantity})` : '';
+            div.innerHTML = `
+                <div class="item-content">
+                    <span class="tag ${item.category.replace(' ', '-')}">${item.category}</span>
+                    <span>${item.name}${quantityText}</span>
+                </div>
+                <button class="remove-btn" onclick="removeGroceryItem(${index})">❌</button>
+            `;
+            groceryDiv.appendChild(div);
+        });
+    }
+
+    function removeGroceryItem(index) {
+        const groceryList = JSON.parse(localStorage.getItem('groceryList')) || [];
+        const item = groceryList[index];
+
+        if (item.quantity > 1) {
+            item.quantity -= 1;
+        } else {
+            groceryList.splice(index, 1);
+        }
+
+        localStorage.setItem('groceryList', JSON.stringify(groceryList));
+        loadGroceryList();
+    }
+</script>
+
+</body>
+</html>
