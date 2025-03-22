@@ -23,6 +23,13 @@
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+        .header-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
         .item {
             display: flex;
             justify-content: space-between;
@@ -83,11 +90,12 @@
 <body>
 
 <div class="container">
+    <img src="/grocery-list-app/groceryheader.png" alt="Store Grocery List Header" class="header-image">
     <h1>Store Grocery List</h1>
 
     <div id="groceryList"></div>
 
-    <a href="index.html" class="nav-btn">Back to Master List 📋</a>
+    <a href="/grocery-list-app/index.html" class="nav-btn">Back to Master List 📋</a>
 </div>
 
 <script>
